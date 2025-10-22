@@ -1,0 +1,66 @@
+version: '3.8'
+
+services:
+  app:
+    build:
+      context: .
+      dockerfile: docker/php/Dockerfile
+      args:
+        - UID=${UID:-1000}
+        - GID=${GID:-1000}
+    container_name: memomate_app
+    restart: unless-stopped
+    working_dir: /var/www/html
+    environment:
+      - PHP_IDE_CONFIG=serverName=memomate_app
+    volumes:
+      - ./:/var/www/html
+      - ./docker/php/xdebug.ini:/usr/local/etc/php/conf.d/docker-php-ext-xdebug.ini
+    networks:
+      - app-network
+    # healthcheck:
+    #   test: ["CMD", "php", "artisan", "about"]
+    #   interval: 30s
+    #   timeout: 10s
+    #   retries: 3
+
+  nginx:
+    image: nginx:1.25-alpine
+    container_name: memomate_nginx
+    restart: unless-stopped
+    ports:
+      - "8080:80"
+    volumes:
+      - ./:/var/www/html
+      - ./docker/nginx/default.conf:/etc/nginx/conf.d/default.conf
+    networks:
+      - app-network
+    # healthcheck:
+    #   test: ["CMD", "wget", "--quiet", "--tries=1", "--spider", "http://localhost/"]
+    #   interval: 30s
+    #   timeout: 10s
+    #   retries: 3
+
+  db:
+    image: postgres:16-bookworm
+    container_name: memomate_db
+    restart: unless-stopped
+    environment:
+      POSTGRES_DB: ${DB_DATABASE:-memomate_db}
+      POSTGRES_USER: ${DB_USERNAME:-memomate_user}
+      POSTGRES_PASSWORD: ${DB_PASSWORD:-memomate_password}
+    volumes:
+      - ./docker/db_data:/var/lib/postgresql/data
+    ports:
+      - "5432:5432"
+    networks:
+      - app-network
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${DB_USERNAME:-memomate_user} -d ${DB_DATABASE:-memomate_db}"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+
+networks:
+  app-network:
+    driver: bridge

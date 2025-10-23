@@ -5,10 +5,11 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
+use Illuminate\Database\Eloquent\Relations\HasOne;
 
-class User extends Model
+class Group extends Model
 {
-    /** @use HasFactory<\Database\Factories\UserFactory> */
+    /** @use HasFactory<\Database\Factories\GroupFactory> */
     use HasFactory;
 
     /**
@@ -16,7 +17,7 @@ class User extends Model
      *
      * @var string
      */
-    protected $primaryKey = 'telegram_id';
+    protected $primaryKey = 'telegram_chat_id';
 
     /**
      * Indicates if the model's ID is auto-incrementing.
@@ -38,33 +39,25 @@ class User extends Model
      * @var list<string>
      */
     protected $fillable = [
-        'telegram_id',
-        'username',
-        'first_name',
-        'last_name',
-        'birth_date',
-        'custom_name',
+        'telegram_chat_id',
+        'title',
     ];
 
     /**
-     * Get the attributes that should be cast.
-     *
-     * @return array<string, string>
+     * The users that belong to the group.
      */
-    protected function casts(): array
+    public function users(): BelongsToMany
     {
-        return [
-            'birth_date' => 'date',
-        ];
+        return $this->belongsToMany(User::class, 'group_members', 'group_id', 'user_id')
+            ->withPivot(['is_member', 'is_participating', 'role', 'joined_at'])
+            ->withTimestamps();
     }
 
     /**
-     * The groups that belong to the user.
+     * Get the group settings for the group.
      */
-    public function groups(): BelongsToMany
+    public function settings(): HasOne
     {
-        return $this->belongsToMany(Group::class, 'group_members', 'user_id', 'group_id')
-            ->withPivot(['is_member', 'is_participating', 'role', 'joined_at'])
-            ->withTimestamps();
+        return $this->hasOne(GroupSetting::class, 'group_id', 'telegram_chat_id');
     }
 }

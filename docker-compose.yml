@@ -48,7 +48,7 @@ services:
       POSTGRES_USER: ${DB_USERNAME:-memomate_user}
       POSTGRES_PASSWORD: ${DB_PASSWORD:-memomate_password}
     volumes:
-      - ./docker/db_data:/var/lib/postgresql/data
+      - memomate_db_data:/var/lib/postgresql/data
     ports:
       - "5432:5432"
     networks:
@@ -62,3 +62,6 @@ services:
 networks:
   app-network:
     driver: bridge
+
+volumes:
+  memomate_db_data:

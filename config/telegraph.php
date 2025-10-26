@@ -81,7 +81,7 @@ return [
          * If enabled, Telegraph dumps received
          * webhook messages to logs
          */
-        'debug' => env('TELEGRAPH_WEBHOOK_DEBUG', false),
+        'debug' => env('APP_DEBUG', false),
     ],
 
     /*
@@ -119,7 +119,7 @@ return [
      * Chat model must be or extend `DefStudio\Telegraph\Models\TelegraphChat::class`
      */
     'models' => [
-        'bot' => DefStudio\Telegraph\Models\TelegraphBot::class,
+        'bot' => App\Models\Bot::class,
         'chat' => DefStudio\Telegraph\Models\TelegraphChat::class,
     ],
 

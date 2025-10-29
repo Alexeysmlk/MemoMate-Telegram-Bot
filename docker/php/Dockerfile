@@ -1,4 +1,4 @@
-FROM php:8.2-fpm-bookworm
+FROM php:8.2-fpm
 
 ARG UID=1000
 ARG GID=1000
@@ -18,9 +18,11 @@ RUN useradd -u ${UID} --system -g laravel -G www-data laravel
 
 RUN docker-php-ext-install pdo pdo_pgsql zip
 
+COPY --from=composer:latest /usr/bin/composer /usr/bin/composer
+
 RUN pecl install xdebug && docker-php-ext-enable xdebug
 
-COPY --from=composer:latest /usr/bin/composer /usr/bin/composer
+COPY docker/php/xdebug.ini /usr/local/etc/php/conf.d/docker-php-ext-xdebug.ini
 
 WORKDIR /var/www/html
 

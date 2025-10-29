@@ -44,13 +44,13 @@ services:
     container_name: memomate_db
     restart: unless-stopped
     environment:
-      POSTGRES_DB: ${DB_DATABASE:-memomate_db}
-      POSTGRES_USER: ${DB_USERNAME:-memomate_user}
-      POSTGRES_PASSWORD: ${DB_PASSWORD:-memomate_password}
+      POSTGRES_DB: ${DB_DATABASE}
+      POSTGRES_USER: ${DB_USERNAME}
+      POSTGRES_PASSWORD: ${DB_PASSWORD}
     volumes:
       - memomate_db_data:/var/lib/postgresql/data
     ports:
-      - "5432:5432"
+      - "${DB_PORT}:${DB_PORT}"
     networks:
       - app-network
     healthcheck:

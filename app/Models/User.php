@@ -8,35 +8,15 @@ use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 
 class User extends Model
 {
-    /** @use HasFactory<\Database\Factories\UserFactory> */
-    use HasFactory;
+    //    /** @use HasFactory<\Database\Factories\UserFactory> */
+    //    use HasFactory;
 
-    /**
-     * The primary key associated with the table.
-     *
-     * @var string
-     */
     protected $primaryKey = 'telegram_id';
 
-    /**
-     * Indicates if the model's ID is auto-incrementing.
-     *
-     * @var bool
-     */
     public $incrementing = false;
 
-    /**
-     * The data type of the primary key ID.
-     *
-     * @var string
-     */
     protected $keyType = 'int';
 
-    /**
-     * The attributes that are mass assignable.
-     *
-     * @var list<string>
-     */
     protected $fillable = [
         'telegram_id',
         'username',
@@ -46,11 +26,6 @@ class User extends Model
         'custom_name',
     ];
 
-    /**
-     * Get the attributes that should be cast.
-     *
-     * @return array<string, string>
-     */
     protected function casts(): array
     {
         return [
@@ -58,9 +33,6 @@ class User extends Model
         ];
     }
 
-    /**
-     * The groups that belong to the user.
-     */
     public function groups(): BelongsToMany
     {
         return $this->belongsToMany(Group::class, 'group_members', 'user_id', 'group_id')

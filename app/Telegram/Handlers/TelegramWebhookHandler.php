@@ -1,10 +1,13 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Telegram\Handlers;
 
 use App\Actions\User\FindOrCreateUserAction;
 use App\Models\Group;
 use DefStudio\Telegraph\DTO\Chat;
+use DefStudio\Telegraph\DTO\User;
 use DefStudio\Telegraph\Handlers\WebhookHandler;
 use DefStudio\Telegraph\Keyboard\Keyboard;
 
@@ -16,7 +19,7 @@ class TelegramWebhookHandler extends WebhookHandler
         parent::__construct();
     }
 
-    protected function start(): void
+    public function start(): void
     {
         if ($this->message->chat()->type() === Chat::TYPE_PRIVATE) {
             $userDto = $this->message->from();
@@ -40,7 +43,7 @@ class TelegramWebhookHandler extends WebhookHandler
         $this->chat->message(__('telegram.group.messages.redirect_user_to_private_chat'))->send();
     }
 
-    protected function handleChatMemberJoined(\DefStudio\Telegraph\DTO\User $member): void
+    protected function handleChatMemberJoined(User $member): void
     {
         $botId = $this->bot->info()['id'];
 

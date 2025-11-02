@@ -1,5 +1,6 @@
 <?php
 
+use App\Enums\UserRole;
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
@@ -16,7 +17,7 @@ return new class extends Migration
             $table->bigInteger('user_id');
             $table->boolean('is_member')->default(true);
             $table->boolean('is_participating')->default(false);
-            $table->string('role')->default('member');
+            $table->string('role')->default(UserRole::Member);
             $table->timestamp('joined_at');
             $table->timestamps();
 
